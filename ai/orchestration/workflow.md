@@ -1,89 +1,88 @@
-# AI Workflow
+# Workflow
 
-This repository follows a lightweight AI-native engineering workflow.
+The end-to-end flow. Read top to bottom. Each step has a gate; each gate has a possible send-back.
 
-```text
-Context → Specs → Architecture → Implementation → Review → Iteration
+---
+
+## The picture
+
+```
+Stakeholder ask
+      │
+      ▼
+┌──────────┐
+│ Analyst  │  Socratic interview → spec draft   (skip if spec already concrete)
+└─────┬────┘
+      │  gate: Analyst (5 checks)
+      ▼
+┌──────────┐
+│   PM     │  Refine AC, scope, priority
+└─────┬────┘
+      │  gate: PM
+      ▼
+┌──────────┐
+│ Architect│  architecture.md: components, boundaries, tradeoffs, risks
+└─────┬────┘
+      │  gate: Architect
+      ▼
+┌──────────┐
+│ Developer│  Implementation + tests + tasks.md update
+└─────┬────┘
+      │  gate: Developer
+      ▼
+┌──────────┐
+│  Tester  │  Verify every AC; pass/fail with evidence
+└─────┬────┘
+      │  gate: Tester
+      ▼
+┌──────────┐
+│ Reviewer │  Maintainability + completeness
+└─────┬────┘
+      │  gate: Reviewer
+      ▼
+    DONE
 ```
 
----
-
-# 1. Context Definition
-
-Goal:
-create shared understanding.
-
-Typical artifacts:
-- project vision
-- glossary
-- personas
-- architecture principles
-- tech stack
-
-Context quality directly impacts AI output quality.
+Send-backs are always **upstream** to the shallowest role that can fix the issue. See `ai/skills/validate_handoff.md` for the decision tree.
 
 ---
 
-# 2. Spec Generation
+## Entry points
 
-Goal:
-break work into small incremental deliverables.
+Two real entry points exist:
 
-Good specs are:
-- small
-- focused
-- testable
-- independently understandable
+1. **`/sdd-spec-socratic`** — vague ask → drafted spec (BA-driven, runs the Analyst phase).
+2. **`/sdd-spec`** — clear ask → drafted spec (developer-driven, skips Analyst).
 
-Recommended:
-- 3 to 8 specs maximum for dojo projects
+After either, run **`/sdd-orchestrate`** to drive the spec through PM → Reviewer.
 
 ---
 
-# 3. Architecture Validation
+## Mode
 
-Goal:
-ensure sustainable technical direction.
+- **HITL (default)** — orchestrator pauses at every gate.
+- **Autonomous** — orchestrator decides at every gate, logs everything, hard-stops at 2 iterations per gate.
 
-Architect responsibilities:
-- validate boundaries
-- identify risks
-- reduce complexity
-- support maintainability
+See `ai/orchestration/hitl_policy.md`.
 
 ---
 
-# 4. Implementation
+## State
 
-Goal:
-deliver working software incrementally.
-
-Developer responsibilities:
-- implement clearly
-- respect architecture
-- preserve maintainability
+`ai/STATE.md` is the single state file. It holds: current spec, role, phase, mode, last 5 decisions, open send-backs. Read at the start of every orchestrate run; updated after every phase transition.
 
 ---
 
-# 5. Testing & Review
+## Sizing guidance
 
-Goal:
-validate correctness and maintainability.
-
-Focus on:
-- spec completion
-- workflow correctness
-- architectural consistency
+- 3–8 specs per milestone is healthy for small/medium repos.
+- One spec ≈ one screen. If it doesn't fit, split it before the Architect gate.
+- A typical spec moves through the full loop in a few hours of human time (much less of clock time if autonomous mode is used for execute/test).
 
 ---
 
-# 6. Iteration
+## What this workflow is NOT
 
-Goal:
-continuously improve:
-- specs
-- workflows
-- context
-- implementation
-
-AI-native engineering is iterative by nature.
+- It is not BMAD — no 12+ personas, no Party Mode, no Enterprise track.
+- It is not GSD — no 6 state files, no npm CLI, no installer.
+- It is not a framework — it's a markdown scaffold you copy into your repo.
