@@ -1,0 +1,112 @@
+[
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "I can help with your CloudSync Pro cancellation request. Could you tell me more about why you'd like to cancel?",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-492063616e206865",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "tool_calls",
+          "index": 0,
+          "message": {
+            "content": null,
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "function": {
+                  "arguments": "{\"product_type\":\"subscription\",\"condition\":\"any\"}",
+                  "name": "get_refund_policy"
+                },
+                "id": "call_slc_policy",
+                "type": "function"
+              }
+            ]
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-call_slc_policy",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 40,
+        "prompt_tokens": 600,
+        "total_tokens": 640
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "I'm sorry, but our policy doesn't allow refunds for subscriptions outside the trial or renewal windows. Your subscription will remain active until the end of the billing period.",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-49276d20736f7272",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "I understand. If you change your mind or need anything else, please don't hesitate to reach out.",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-4920756e64657273",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  }
+]

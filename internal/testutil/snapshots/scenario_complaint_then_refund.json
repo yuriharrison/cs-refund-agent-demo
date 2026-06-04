@@ -1,0 +1,147 @@
+[
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "I'm sorry the t-shirts didn't match what you expected. Would you like to proceed with a refund?",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-49276d20736f7272",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "I'd be happy to help. Could you describe how the t-shirts differ from what was shown on the website?",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-4927642062652068",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "tool_calls",
+          "index": 0,
+          "message": {
+            "content": null,
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "function": {
+                  "arguments": "{\"product_type\":\"clothing\",\"condition\":\"not_as_described\"}",
+                  "name": "get_refund_policy"
+                },
+                "id": "call_ctr_policy",
+                "type": "function"
+              }
+            ]
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-call_ctr_policy",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 40,
+        "prompt_tokens": 600,
+        "total_tokens": 640
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "tool_calls",
+          "index": 0,
+          "message": {
+            "content": null,
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "function": {
+                  "arguments": "{\"order_item_id\":2,\"refund_type\":\"full\",\"amount\":69.98,\"reason\":\"not as described — t-shirts don't match website photos\"}",
+                  "name": "issue_refund"
+                },
+                "id": "call_ctr_refund",
+                "type": "function"
+              }
+            ]
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-call_ctr_refund",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 40,
+        "prompt_tokens": 600,
+        "total_tokens": 640
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "I've processed a full refund of $69.98 for the t-shirts. You should see it within 5-7 business days.",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-492776652070726f",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  }
+]

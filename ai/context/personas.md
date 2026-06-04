@@ -1,30 +1,9 @@
 # Personas
 
-## Persona 1
+## 1. Developer
+- **Goal:** Understand and verify the AI agent's capabilities.
+- **Needs:** Clear visibility into the agent's internal state, function calls, and token usage/pricing.
 
-### Name
-
-Example:
-Casual Football Fan
-
-### Goals
-
-- predict matches quickly
-- compare scores with friends
-
-### Pain Points
-
-- difficult interfaces
-- confusing workflows
-
-### Main Workflows
-
-- create prediction
-- review leaderboard
-- share results
-
----
-
-## Persona 2
-
-Add additional personas if needed.
+## 2. Mock Customer
+- **Goal:** Get a refund for a purchased product or receive support.
+- **Needs:** Conversational, helpful, and clear responses from the AI agent.

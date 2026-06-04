@@ -1,0 +1,147 @@
+[
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "I can help with your keyboard return. What's the reason you'd like to return it?",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-492063616e206865",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "tool_calls",
+          "index": 0,
+          "message": {
+            "content": null,
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "function": {
+                  "arguments": "{\"product_type\":\"electronics\",\"condition\":\"change_of_mind\"}",
+                  "name": "get_refund_policy"
+                },
+                "id": "call_pra_policy",
+                "type": "function"
+              }
+            ]
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-call_pra_policy",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 40,
+        "prompt_tokens": 600,
+        "total_tokens": 640
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "Based on our policy, I can offer a partial refund of 70% ($55.99) for change-of-mind returns. Would you like to accept?",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-4261736564206f6e",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "tool_calls",
+          "index": 0,
+          "message": {
+            "content": null,
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "function": {
+                  "arguments": "{\"order_item_id\":6,\"refund_type\":\"partial\",\"amount\":55.99,\"reason\":\"change of mind — customer accepted partial refund\"}",
+                  "name": "issue_refund"
+                },
+                "id": "call_pra_refund",
+                "type": "function"
+              }
+            ]
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-call_pra_refund",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 40,
+        "prompt_tokens": 600,
+        "total_tokens": 640
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "I've processed a partial refund of $55.99 for your keyboard. You should see it within 5-7 business days.",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-492776652070726f",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  }
+]

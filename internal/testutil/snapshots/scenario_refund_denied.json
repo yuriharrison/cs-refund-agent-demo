@@ -1,0 +1,112 @@
+[
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "I can help with that. Could you tell me the reason you'd like to return the t-shirt?",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-492063616e206865",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "tool_calls",
+          "index": 0,
+          "message": {
+            "content": null,
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "function": {
+                  "arguments": "{\"product_type\":\"clothing\",\"condition\":\"change_of_mind\"}",
+                  "name": "get_refund_policy"
+                },
+                "id": "call_rd_policy",
+                "type": "function"
+              }
+            ]
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-call_rd_policy",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 40,
+        "prompt_tokens": 600,
+        "total_tokens": 640
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "Unfortunately, our policy doesn't allow refunds for change-of-mind returns on clothing items due to hygiene regulations. I'm sorry I can't process a refund in this case.",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-556e666f7274756e",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "I understand. Thank you for your understanding. Please let me know if there's anything else I can help with.",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-4920756e64657273",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  }
+]

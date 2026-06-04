@@ -1,62 +1,39 @@
 # Project Vision
 
 ## Project Name
-
-<project-name>
+customer-support-demo
 
 ---
 
 ## Problem Statement
-
-Describe:
-- what problem this project solves
-- why it matters
-- who experiences the problem
-
-Example:
-Users struggle to organize local football predictions across groups and leaderboards.
+Demonstrating an AI agent handling customer refund support in a chat interface, showcasing the agentic flow and decision-making process.
 
 ---
 
 ## Users
-
-Describe the main user types.
-
-Example:
-- casual users
-- administrators
-- premium users
+- Developers: Operating the demo, viewing token usage, and observing debug messages.
+- Mock Customers: Interacting with the agent to request refunds.
 
 ---
 
 ## Core Features
-
-List the most important features.
-
-Example:
-- authentication
-- predictions
-- leaderboard
-- statistics
+- Single page, full-screen chat interface.
+- Agentic flow for handling refund requests (gather data, check policy, authorize/deny/escalate).
+- Debug system messages illustrating AI function calls and actions.
+- Testcase selection box to automatically emulate user flows.
+- Token count visibility.
 
 ---
 
 ## Constraints
-
-Technical or business limitations.
-
-Example:
-- must remain lightweight
-- mobile-first UI
-- no paid infrastructure
+- Time sensitive task, strictly limited to defined scope.
+- No authentication or login.
+- Seed mocked data on a local SQLite database.
+- Must use OpenAI API.
 
 ---
 
 ## Success Criteria
-
-Define what success means.
-
-Example:
-- users can complete core workflow
-- specs remain under control
-- implementation stays maintainable
+- Agent correctly handles various refund test cases (full, partial, deny, escalate).
+- UI clearly distinguishes between Customer, Agent, System, and Human messages.
+- Automated testing snapshot pattern successfully replays API responses.

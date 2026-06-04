@@ -1,44 +1,17 @@
 # Tech Stack
 
 ## Frontend
-
-Example:
-- React
-- Next.js
-- Vanilla JS
-
----
+- React / UI framework
+- Tailwind CSS
+- shadcn/ui
+- Orval (for API client generation)
 
 ## Backend
+- Go
+- Chi (Router)
+- swaggo/swag (OpenAPI specs)
+- GORM with SQLite (Database)
+- cloudwego/eino (AI Agent Framework)
 
-Example:
-- FastAPI
-- Spring Boot
-- Node.js
-
----
-
-## Database
-
-Example:
-- PostgreSQL
-- SQLite
-- Redis
-
----
-
-## Infrastructure
-
-Example:
-- Railway
-- Docker
-- Vercel
-
----
-
-## AI Tools
-
-Example:
-- Claude
-- ChatGPT
-- Cursor
+## AI / Infrastructure
+- OpenAI API (GPT-5.4 mini equivalent)

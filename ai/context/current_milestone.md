@@ -1,29 +1,4 @@
 # Current Milestone
 
-## Current Focus
-
-Describe the current implementation phase.
-
-Example:
-MVP foundation and core workflows.
-
----
-
-## Active Specs
-
-- Spec 001
-- Spec 002
-
----
-
-## Risks
-
-- unclear requirements
-- dependency uncertainty
-
----
-
-## Open Questions
-
-- authentication strategy?
-- persistence approach?
+**Customer Support Refund Demo**
+Build a fully functional, self-contained demo of an AI customer support agent capable of handling refunds, escalating to humans, and demonstrating its internal workings to developers via debug messages.

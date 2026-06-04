@@ -1,0 +1,122 @@
+[
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "I can help with your software refund request. Could you describe the issue you're experiencing?",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-492063616e206865",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "tool_calls",
+          "index": 0,
+          "message": {
+            "content": null,
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "function": {
+                  "arguments": "{\"product_type\":\"software\",\"condition\":\"defective\"}",
+                  "name": "get_refund_policy"
+                },
+                "id": "call_ebp_policy",
+                "type": "function"
+              }
+            ]
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-call_ebp_policy",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 40,
+        "prompt_tokens": 600,
+        "total_tokens": 640
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "tool_calls",
+          "index": 0,
+          "message": {
+            "content": null,
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "function": {
+                  "arguments": "{\"reason\":\"software refund requires human review per policy\"}",
+                  "name": "escalate_to_human"
+                },
+                "id": "call_ebp_escalate",
+                "type": "function"
+              }
+            ]
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-call_ebp_escalate",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 40,
+        "prompt_tokens": 600,
+        "total_tokens": 640
+      }
+    },
+    "status": 200
+  },
+  {
+    "request": {},
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "Software refunds require review by our support team. I've connected you with a specialist who will assist you shortly.",
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1717430400,
+      "id": "chatcmpl-536f667477617265",
+      "model": "deepseek/deepseek-v4-flash",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 500,
+        "total_tokens": 550
+      }
+    },
+    "status": 200
+  }
+]
