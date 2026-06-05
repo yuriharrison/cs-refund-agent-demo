@@ -1,116 +1,155 @@
-# empirical-sdd-ddd-starter
+# cs-refund-agent-demo
 
-A lightweight, drop-in starter that turns any repository into an **AI-native Spec-Driven + Document-Driven** project.
+A self-contained demo of an AI customer support agent that handles refund workflows — gathering order data, evaluating refund policies, making autonomous decisions (full/partial/deny), and escalating to human support when necessary — all visible through a real-time chat interface with full debug observability.
 
-Markdown only. No install. Works out of the box in Claude Code via slash commands; works anywhere else by reading the playbooks directly.
+Built with **Go** (backend), **CloudWeGo Eino** (ReAct agent), and **React + Vite** (frontend). See the full [spec](specs/S0001-customer-support-demo/S0001-customer-support-demo.md).
 
 ---
 
-## What you get
+## What it does
 
-- **Six slash commands** (`/sdd-init`, `/sdd-spec`, `/sdd-spec-socratic`, `/sdd-orchestrate`, `/sdd-handoff`, `/sdd-status`)
-- **Six roles** (Analyst, PM, Architect, Developer, Tester, Reviewer) — each with concrete gate criteria and explicit send-back rules
-- **A Socratic spec-authoring skill** for Business Analysts to turn vague ideas into testable specs
-- **An orchestration playbook** that drives a spec through the role loop with validation gates and feedback loops
-- **Human-in-the-loop by default**, with an opt-in autonomous mode that hard-stops after 2 failed iterations
-- **One state file** (`ai/STATE.md`) — not six, not twelve
+A customer chats with an AI support agent about a refund. The agent autonomously:
+
+1. Looks up the customer's orders
+2. Identifies the product and reason
+3. Checks the refund policy for that product type + condition
+4. Takes action: issues a full/partial refund, denies it with an explanation, or escalates to a human agent
+5. Streams every step (tool calls, reasoning, results) to the frontend via SSE
+
+The frontend renders the full conversation with distinct visual treatment for agent messages, system confirmations (refund cards), escalation notices, human agent handoffs, and collapsible debug panels showing every tool call.
+
+A built-in **demo selector** (command palette) lets you run 11 predefined scenarios that exercise every branch of the refund workflow without typing anything.
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Frontend (Vite + React + Tailwind)                 │
+│  Chat UI · SSE Stream · Demo Selector               │
+└──────────────────────┬──────────────────────────────┘
+                       │ HTTP + SSE
+┌──────────────────────▼──────────────────────────────┐
+│  Backend (Go + Chi)                                 │
+│  ┌────────────────────────────────────────────────┐ │
+│  │  Eino ReAct Agent (GPT-5.4 mini)              │ │
+│  │  Tools: lookup_orders · get_policy ·           │ │
+│  │         issue_refund · escalate_to_human       │ │
+│  └────────────────────────────────────────────────┘ │
+│  SSE Event Bus · Chat Service · Token Tracker       │
+│  GORM + SQLite (seeded on startup)                  │
+└─────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## Quick start
 
-### 1. Adopt it (copy two folders into your repo)
+### Prerequisites
+
+- Go 1.22+
+- Node.js 18+
+- An OpenRouter API key (or OpenAI-compatible endpoint) set as `OPEN_ROUTER_API_KEY`
+
+### Setup
 
 ```bash
-cp -R ai/        /path/to/your/repo/ai/
-cp -R .claude/   /path/to/your/repo/.claude/
+make setup
 ```
 
-See `INSTALL.md` for details.
+### Run
 
-### 2. Fill context (~15 min)
-
-In Claude Code:
-
-```
-/sdd-init
+```bash
+make dev
 ```
 
-Or edit `ai/context/*` directly.
+This starts the Go backend and Vite dev server concurrently. Open [http://localhost:5173](http://localhost:5173).
 
-### 3. Draft your first spec
+### Test
 
-**Business Analyst** (vague idea):
+```bash
+make test           # Run all Go tests (uses snapshots)
+make test-e2e       # Run Playwright E2E tests
+make test-refresh   # Re-record snapshots from live API
 ```
-/sdd-spec-socratic
-```
-
-**Developer** (clear ask):
-```
-/sdd-spec
-```
-
-### 4. Orchestrate
-
-```
-/sdd-orchestrate
-```
-
-Drives PM → Architect → Developer → Tester → Reviewer with explicit gates. Pauses for you at every step (HITL); say "orchestrate autonomously" to flip the mode.
 
 ---
 
-## The flow
+## Demo scenarios
+
+Click the **Demo** button in the header to open the command palette. Each scenario is a scripted sequence of customer messages that the agent responds to naturally:
+
+| Scenario | What happens |
+|:---|:---|
+| Full Refund — Defective Product | Customer reports defective headphones, agent issues full refund |
+| Full Refund — Wrong Item | Wrong item shipped, immediate full refund |
+| Refund — Product Not Specified | Customer doesn't say which product; agent looks up orders and asks |
+| Partial Refund — Customer Accepts | Change-of-mind return, agent offers partial, customer accepts |
+| Partial Refund — Customer Declines | Partial offered, customer refuses, agent escalates to human |
+| Refund Denied — No Refund Policy | T-shirt change-of-mind, policy says no refund |
+| Complaint Then Refund | Customer complains first, then requests refund |
+| Feedback Only — No Refund | Customer gives feedback, no refund needed |
+| Escalation — Software Policy | Software refunds always require human review |
+| Escalation — System Error | Mocked infrastructure failure triggers escalation |
+| Subscription — Trial Refund | Cancellation within trial window, full refund |
+
+---
+
+## Project structure
 
 ```
-Stakeholder ask  →  Analyst (optional, Socratic)  →  PM  →  Architect  →  Developer  →  Tester  →  Reviewer  →  DONE
-
-Every arrow has a gate. Every gate has a possible send-back to the shallowest fixing role.
+cmd/server/main.go              Server entrypoint
+internal/
+  agent/                        Eino ReAct agent, system prompt, 4 tools
+  api/                          Chi router, chat/SSE/usecase handlers
+  chat/                         Session service, event bus, models
+  db/                           GORM + SQLite setup, seed data
+  domain/                       Customer, Order, Product, Refund models
+  token/                        Token usage tracking + cost calculation
+  usecase/                      Demo scenario registry + step runner
+  testutil/                     Snapshot record/replay, test fixtures
+web/src/
+  components/chat/              ChatContainer, MessageList, MessageBubble,
+                                SystemMessage, DebugMessage, HumanMessage,
+                                ChatInput, TokenCounter
+  components/demo/              UsecaseSelector (command palette)
+  hooks/                        useChat (state + SSE), useUsecases
+  lib/                          SSE client helper
+  styles/                       Global styles
+specs/                          Feature spec + implementation tasks
 ```
 
-See `ai/orchestration/workflow.md` for the full picture.
+---
+
+## How testing works
+
+Tests use a **snapshot system** that records OpenAI API responses on first run and replays them on subsequent runs — making tests fast, deterministic, and free after initial recording.
+
+```bash
+# Run with snapshots (default, no API key needed)
+make test
+
+# Re-record from live API
+make test-refresh
+
+# Run live API tests only
+make test-live
+```
 
 ---
 
-## Who this is for
+## Makefile commands
 
-- **Business Analysts** who want to draft good specs by being interviewed Socratically
-- **Developers** who want orchestrated AI assistance without a heavy framework
-- **Small / medium teams** who want structure without BMAD's surface area
-
----
-
-## Design tenets
-
-- **KISS.** Markdown only. No CLI. No npm. No hooks. Nothing to install.
-- **Token-cheap at runtime.** Load only the role file for the active phase.
-- **Pragmatic.** 3–8 specs per milestone. One screen per spec. One state file.
-- **Validation loops by default.** Gates catch problems early; send-backs route to the shallowest fixing role.
-- **Human-in-the-loop by default.** Autonomous is opt-in and has guard rails.
-
----
-
-## What this is not
-
-- Not a framework — there's nothing to install, nothing to maintain
-- Not as extensive as **BMAD** (which has 12+ personas, 34+ workflows, Party Mode, three tracks)
-- Not as heavy as **GSD** (which has six state files and an npm CLI)
-
-It borrows the lessons of both and intentionally stays smaller. Built for repos that want structure without ceremony.
-
----
-
-## Where to go next
-
-- `INSTALL.md` — drop-in adoption
-- `ai/README.md` — index of the scaffold
-- `ai/orchestration/workflow.md` — the flow in one page
-- `ai/skills/orchestrate.md` — the orchestration playbook
-- `ai/skills/write_spec_socratic.md` — the Socratic interview flow
-- `ai/skills/validate_handoff.md` — gates and send-back tree
-
----
-
-## License
-
-(Choose your license when you adopt this — the scaffold itself imposes none.)
+| Command | Description |
+|:---|:---|
+| `make dev` | Start backend + frontend concurrently |
+| `make dev-be` | Start Go backend only |
+| `make dev-fe` | Start Vite frontend only |
+| `make test` | Run all Go tests with snapshots |
+| `make test-e2e` | Run Playwright E2E tests |
+| `make test-refresh` | Re-record snapshots from live API |
+| `make test-live` | Run live API tests against OpenRouter |
+| `make setup` | Install Go + Node dependencies |
+| `make swagger` | Generate OpenAPI spec |
+| `make codegen` | Generate TypeScript API client |
