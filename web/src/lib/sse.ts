@@ -7,7 +7,10 @@ export type SSEEventType =
   | "system_escalation"
   | "human_message"
   | "token_update"
-  | "error";
+  | "error"
+  | "demo_started"
+  | "demo_ended"
+  | "demo_customer_message";
 
 export interface SSEEvent<T = unknown> {
   type: SSEEventType;
@@ -38,6 +41,9 @@ export function connectSSE(
     "human_message",
     "token_update",
     "error",
+    "demo_started",
+    "demo_ended",
+    "demo_customer_message",
   ];
 
   for (const type of eventTypes) {

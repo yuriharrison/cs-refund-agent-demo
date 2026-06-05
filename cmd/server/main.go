@@ -17,6 +17,7 @@ import (
 	"github.com/yuriharrison/empirical-proj/internal/db"
 	"github.com/yuriharrison/empirical-proj/internal/domain"
 	"github.com/yuriharrison/empirical-proj/internal/token"
+	"github.com/yuriharrison/empirical-proj/internal/usecase"
 )
 
 func demoForceErrorEnabled() bool {
@@ -84,10 +85,13 @@ func main() {
 
 	chatHandler := api.NewChatHandler(chatService, ag, demoForceErrorEnabled())
 	sseHandler := api.NewSSEHandler(eventBus)
+	ucRunner := usecase.NewRunner(chatHandler, eventBus)
+	usecaseHandler := api.NewUsecaseHandler(ucRunner, chatHandler)
 
 	router := api.NewRouter(&api.Deps{
-		ChatHandler: chatHandler,
-		SSEHandler:  sseHandler,
+		ChatHandler:    chatHandler,
+		SSEHandler:     sseHandler,
+		UsecaseHandler: usecaseHandler,
 	})
 
 	srv := &http.Server{

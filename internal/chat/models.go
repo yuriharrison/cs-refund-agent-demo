@@ -23,6 +23,9 @@ const (
 	EventHumanMessage       EventType = "human_message"
 	EventTokenUpdate        EventType = "token_update"
 	EventError              EventType = "error"
+	EventDemoStarted        EventType = "demo_started"
+	EventDemoEnded          EventType = "demo_ended"
+	EventDemoCustomerMsg    EventType = "demo_customer_message"
 )
 
 type Message struct {

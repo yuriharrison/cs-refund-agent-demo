@@ -3,6 +3,7 @@ package agent
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -19,6 +20,10 @@ import (
 	"github.com/yuriharrison/empirical-proj/internal/token"
 	"gorm.io/gorm"
 )
+
+// ErrEscalated is returned by ProcessMessage when the agent escalated to a human.
+// Callers should treat this as a terminal state and stop sending further messages.
+var ErrEscalated = errors.New("conversation escalated to human agent")
 
 type Agent struct {
 	runner        *adk.Runner
@@ -113,7 +118,13 @@ func (a *Agent) ProcessMessage(ctx context.Context, sessionID string, messages [
 
 		if msgOutput.IsStreaming && msgOutput.MessageStream != nil {
 			if !escalated {
-				finalContent = a.handleStreamingMessage(sessionID, msgOutput.MessageStream)
+				content, streamEscalated := a.handleStreamingMessage(sessionID, msgOutput.MessageStream)
+				finalContent = content
+				if streamEscalated {
+					escalated = true
+				}
+			} else {
+				a.drainStream(msgOutput.MessageStream)
 			}
 			continue
 		}
@@ -164,11 +175,15 @@ func (a *Agent) ProcessMessage(ctx context.Context, sessionID string, messages [
 		a.recordTokenUsage(sessionID, msg)
 	}
 
+	if escalated {
+		return finalContent, ErrEscalated
+	}
 	return finalContent, nil
 }
 
-func (a *Agent) handleStreamingMessage(sessionID string, stream *schema.StreamReader[*schema.Message]) string {
+func (a *Agent) handleStreamingMessage(sessionID string, stream *schema.StreamReader[*schema.Message]) (string, bool) {
 	var fullContent string
+	var escalated bool
 	pendingToolCalls := make(map[string]*schema.ToolCall)
 
 	for {
@@ -184,7 +199,7 @@ func (a *Agent) handleStreamingMessage(sessionID string, stream *schema.StreamRe
 			continue
 		}
 
-		if msg.Content != "" {
+		if msg.Content != "" && !escalated {
 			fullContent += msg.Content
 			a.eventBus.Publish(chat.Event{
 				Type:      chat.EventAgentMessage,
@@ -209,12 +224,24 @@ func (a *Agent) handleStreamingMessage(sessionID string, stream *schema.StreamRe
 	if len(pendingToolCalls) > 0 {
 		completed := make([]schema.ToolCall, 0, len(pendingToolCalls))
 		for _, tc := range pendingToolCalls {
+			if tc.Function.Name == "escalate_to_human" {
+				escalated = true
+			}
 			completed = append(completed, *tc)
 		}
 		a.handleToolCalls(sessionID, completed)
 	}
 
-	return fullContent
+	return fullContent, escalated
+}
+
+func (a *Agent) drainStream(stream *schema.StreamReader[*schema.Message]) {
+	for {
+		_, err := stream.Recv()
+		if err != nil {
+			return
+		}
+	}
 }
 
 func (a *Agent) recordTokenUsage(sessionID string, msg *schema.Message) {

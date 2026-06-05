@@ -1,7 +1,7 @@
 ---
 id: T006
 name: Usecase engine — backend registry/runner + frontend command palette + codegen pipeline
-status: PENDING
+status: DONE
 deps: [T003, T005]
 ---
 

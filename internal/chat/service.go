@@ -14,8 +14,9 @@ type Service struct {
 }
 
 type session struct {
-	ID       string
-	Messages []Message
+	ID        string
+	Messages  []Message
+	Escalated bool
 }
 
 func NewService(bus *EventBus) *Service {
@@ -79,6 +80,25 @@ func (s *Service) GetHistory(sessionID string) []Message {
 	msgs := make([]Message, len(sess.Messages))
 	copy(msgs, sess.Messages)
 	return msgs
+}
+
+func (s *Service) MarkEscalated(sessionID string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if sess, ok := s.sessions[sessionID]; ok {
+		sess.Escalated = true
+	}
+}
+
+func (s *Service) IsEscalated(sessionID string) bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	if sess, ok := s.sessions[sessionID]; ok {
+		return sess.Escalated
+	}
+	return false
 }
 
 func (s *Service) Reset(sessionID string) string {

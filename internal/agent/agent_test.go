@@ -2,6 +2,7 @@ package agent_test
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"testing"
 
@@ -85,6 +86,10 @@ func runConversation(t *testing.T, ag *agent.Agent, sessionID string, messages [
 	for _, msg := range messages {
 		history = append(history, schema.UserMessage(msg))
 		resp, err := ag.ProcessMessage(ctx, sessionID, history)
+		if errors.Is(err, agent.ErrEscalated) {
+			responses = append(responses, resp)
+			break
+		}
 		if err != nil {
 			t.Fatalf("agent error on message %q: %v", msg, err)
 		}

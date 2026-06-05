@@ -8,8 +8,9 @@ import (
 )
 
 type Deps struct {
-	ChatHandler *ChatHandler
-	SSEHandler  *SSEHandler
+	ChatHandler    *ChatHandler
+	SSEHandler     *SSEHandler
+	UsecaseHandler *UsecaseHandler
 }
 
 func NewRouter(deps *Deps) *chi.Mux {
@@ -29,6 +30,11 @@ func NewRouter(deps *Deps) *chi.Mux {
 
 		if deps != nil && deps.SSEHandler != nil {
 			r.Get("/chat/stream", deps.SSEHandler.Stream)
+		}
+
+		if deps != nil && deps.UsecaseHandler != nil {
+			r.Get("/usecases", deps.UsecaseHandler.List)
+			r.With(jsonContentType).Post("/usecases/{id}/run", deps.UsecaseHandler.Run)
 		}
 	})
 

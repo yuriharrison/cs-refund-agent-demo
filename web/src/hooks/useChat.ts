@@ -129,6 +129,7 @@ export function useChat() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [isConcluded, setIsConcluded] = useState(false);
+  const [isDemoRunning, setIsDemoRunning] = useState(false);
   const [tokenStats, setTokenStats] = useState<TokenStats>({
     promptTokens: 0,
     completionTokens: 0,
@@ -139,10 +140,16 @@ export function useChat() {
   const streamingAgentIdRef = useRef<string | null>(null);
   const streamTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sessionIdRef = useRef<string | null>(null);
+  const isDemoRunningRef = useRef(false);
+  const isConcludedRef = useRef(false);
 
   useEffect(() => {
     sessionIdRef.current = sessionId;
   }, [sessionId]);
+
+  useEffect(() => {
+    isConcludedRef.current = isConcluded;
+  }, [isConcluded]);
 
   const clearStreamTimeout = useCallback(() => {
     if (streamTimeoutRef.current) {
@@ -189,6 +196,7 @@ export function useChat() {
         }
 
         case "agent_message": {
+          if (isConcludedRef.current) break;
           setIsTyping(false);
           const { content } = event.data as { content: string };
 
@@ -334,6 +342,35 @@ export function useChat() {
           break;
         }
 
+        case "demo_customer_message": {
+          const { content } = event.data as { content: string };
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: crypto.randomUUID(),
+              type: "customer",
+              content,
+            },
+          ]);
+          setIsProcessing(true);
+          setIsTyping(true);
+          break;
+        }
+
+        case "demo_started": {
+          isDemoRunningRef.current = true;
+          setIsDemoRunning(true);
+          setIsConcluded(false);
+          break;
+        }
+
+        case "demo_ended": {
+          isDemoRunningRef.current = false;
+          setIsDemoRunning(false);
+          setIsConcluded(true);
+          break;
+        }
+
         case "token_update": {
           const { prompt_tokens, completion_tokens, total } = event.data as {
             prompt_tokens: number;
@@ -447,6 +484,8 @@ export function useChat() {
     setIsProcessing(false);
     setIsTyping(false);
     setIsConcluded(false);
+    isDemoRunningRef.current = false;
+    setIsDemoRunning(false);
 
     if (newSessionId) {
       setSessionId(newSessionId);
@@ -463,14 +502,45 @@ export function useChat() {
     };
   }, [clearStreamTimeout, disconnectSSE]);
 
+  const prepareForDemo = useCallback(async (): Promise<string> => {
+    clearStreamTimeout();
+    streamingAgentIdRef.current = null;
+    disconnectSSE();
+
+    let sid: string;
+    if (sessionIdRef.current) {
+      sid = await resetSession(sessionIdRef.current);
+    } else {
+      const res = await fetch("/api/chat/reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: "new" }),
+      });
+      const data = (await res.json()) as { session_id: string };
+      sid = data.session_id;
+    }
+
+    setMessages([]);
+    setTokenStats({ promptTokens: 0, completionTokens: 0, total: 0 });
+    setIsProcessing(false);
+    setIsTyping(false);
+    setIsConcluded(false);
+    setSessionId(sid);
+    connectToSession(sid);
+
+    return sid;
+  }, [clearStreamTimeout, disconnectSSE, connectToSession]);
+
   return {
     messages,
     sessionId,
     isProcessing,
     isTyping,
     isConcluded,
+    isDemoRunning,
     tokenStats,
     sendMessage,
     reset,
+    prepareForDemo,
   };
 }
