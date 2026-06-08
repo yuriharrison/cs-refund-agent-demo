@@ -20,6 +20,12 @@ The frontend renders the full conversation with distinct visual treatment for ag
 
 A built-in **demo selector** (command palette) lets you run 11 predefined scenarios that exercise every branch of the refund workflow without typing anything.
 
+### Screenshots
+
+| Refund Success Example | Human Escalation Example |
+| :---: | :---: |
+| ![Refund Success Example](readme/refund-success-example.png) | ![Human Escalation Example](readme/human-escalation-example.png) |
+
 ---
 
 ## Architecture
